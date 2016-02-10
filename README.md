@@ -7,6 +7,7 @@ Packer files to build an OMV vagrant .box file
 * VirtualBox installed (https://www.virtualbox.org/)
 * If you're on Windows you need Cygwin with ssh and rsyn support (https://www.cygwin.com/)
 
+
 ## Instructions
 * Clone the repo
 * Download the 3.0.2 beta iso of OMV (https://sourceforge.net/projects/openmediavault/files/3.0beta/) and place it in the same folder as the json file.
