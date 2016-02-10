@@ -1,0 +1,69 @@
+{
+  "variables": {
+    "disk_size": "8192"
+  },
+  "builders": [
+    {
+      "name": "amd64-virtualbox",
+      "type": "virtualbox-iso",
+      "guest_os_type": "Debian_64",
+      "guest_additions_mode": "attach",
+      "headless": false,
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--cpus", "1"]
+      ],
+      "disk_size": "{{user `disk_size`}}",
+      "hard_drive_interface": "sata",
+      "iso_url": "openmediavault_3.0.2-amd64.iso",
+      "iso_checksum": "7a21c86105fac80f0778c7ba4e5e9e99",
+      "iso_checksum_type": "md5",
+      "http_directory": "http",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "60m",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<tab><wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "install ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "auto ",
+        "debian-installer=en_US ",
+        "country=SE ",
+        "language=en ",
+        "locale=en_US ",
+        "kbd-chooser/method=sv ",
+        "keyboard-configuration/xkb-keymap=sv ",
+        "console-keymaps-at/keymap=sv ",
+        "fb=false ",
+        "debconf/frontend=noninteractive ",
+        "console-setup/ask_detect=false ",
+        "netcfg/get_hostname=vagrant-omv ",
+        "netcfg/get_domain=local ",
+        "DEBCONF_DEBUG=5 ",
+        "-- ",
+        "<enter><wait>"
+        ],
+      "shutdown_command": "echo vagrant | sudo -S poweroff"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo vagrant | sudo -S bash {{.Path}}",
+      "scripts": ["setup.sh"]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "omv-3.0.2-{{.BuildName}}.box"
+    }
+  ]
+}
